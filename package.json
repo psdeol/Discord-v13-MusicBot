@@ -1,0 +1,28 @@
+{
+  "name": "discord-v13-musicbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psdeol/Discord-v13-MusicBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/psdeol/Discord-v13-MusicBot/issues"
+  },
+  "homepage": "https://github.com/psdeol/Discord-v13-MusicBot#readme",
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/voice": "^0.7.5",
+    "discord.js": "^13.3.1",
+    "dotenv": "^10.0.0",
+    "ffmpeg-static": "^4.4.0",
+    "yt-search": "^2.10.2",
+    "ytdl-core": "^4.9.1"
+  }
+}
