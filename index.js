@@ -51,7 +51,15 @@ client.on('messageCreate', async message => {
             break;
 
         case 'play':
-            client.commands.get('play').execute(message, args, queue);
+            client.commands.get('play').execute(client, message, args, queue);
+            break;
+
+        case 'skip':
+            client.commands.get('skip').execute(message, queue);
+            break;
+
+        case 'stop':
+            client.commands.get('stop').execute(message, queue);
             break;
     }
 });

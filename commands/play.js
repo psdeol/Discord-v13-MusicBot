@@ -6,9 +6,10 @@ const ytSearch = require('yt-search');
 module.exports = {
     name: 'play',
     aliases: ['p'],
+    permissions: [],
     cooldown: 0,
     description: 'adds input song to current server queue',
-    async execute(message, args, queues) {
+    async execute(client, message, args, queues) {
         
         if (!message.member.voice.channel) {
             let embed = new MessageEmbed()
@@ -31,7 +32,7 @@ module.exports = {
 
         if (song) {
             if (!serverQueue) {
-                createQueue(message, queues, song);
+                createQueue(client, message, queues, song);
 
             } else {
                 serverQueue.songs.push(song);
@@ -92,7 +93,7 @@ const findSong = async (message, args) => {
     return song;
 }
 
-const createQueue = async (message, queues, song) => {
+const createQueue = async (client, message, queues, song) => {
     const queueConstructor =  {
         voiceChannel: message.member.voice.channel,
         textChannel: message.channel,
@@ -116,7 +117,7 @@ const createQueue = async (message, queues, song) => {
         }
 
         queueConstructor.connection = connection;
-        playSong(message, queues);
+        playSong(client, message, queues);
 
     } catch (error) {
         queues.delete(message.guild.id);
@@ -131,7 +132,7 @@ const createQueue = async (message, queues, song) => {
     }
 }
 
-const playSong = async (message, queues) => {
+const playSong = async (client, message, queues) => {
     const queue = queues.get(message.guild.id);
 
     if (queue.songs.length === 0) {
@@ -146,9 +147,9 @@ const playSong = async (message, queues) => {
         highWaterMark: 1<<25
     });
 
-    queue.player.play(createAudioResource(stream, { inputType: StreamType.Arbitrary }));
+    queue.player.play(createAudioResource(stream));
     queue.connection.subscribe(queue.player);
-    sendPlayingEmbed(message, song, queue);
+    sendPlayingEmbed(client, message, song, queues);
 
     queue.player.on(AudioPlayerStatus.Idle, () => {
         song = queue.songs.shift();
@@ -163,14 +164,15 @@ const playSong = async (message, queues) => {
                 highWaterMark: 1<<25
             });
 
-            queue.player.play(createAudioResource(stream, { inputType: StreamType.Arbitrary }));
-            sendPlayingEmbed(message, song, queue);
+            queue.player.play(createAudioResource(stream));
+            sendPlayingEmbed(client, message, song, queues);
         }
     })
     
 }
 
-const sendPlayingEmbed = async (message, song, queue) => {
+const sendPlayingEmbed = async (client, message, song, queues) => {
+    let queue = queues.get(message.guild.id);
     let videoID = song.url.split("=")[1];
 
     let embed = new MessageEmbed()
@@ -222,9 +224,8 @@ const sendPlayingEmbed = async (message, song, queue) => {
             queue.player.pause();
 
         } else if (button.customId === 'skip' + videoID) {
-
-            // TODO: STOP CURRENT SONG, PLAY NEXT IN QUEUE
-            
+            button.deferUpdate();
+            client.commands.get('skip').execute(message, queues);
         }
     });
 }
