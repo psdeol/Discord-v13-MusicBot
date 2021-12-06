@@ -171,6 +171,8 @@ const playSong = async (message, queues) => {
 }
 
 const sendPlayingEmbed = async (message, song, queue) => {
+    let videoID = song.url.split("=")[1];
+
     let embed = new MessageEmbed()
         .setTitle(song.title)
         .setThumbnail(song.thumbnail)
@@ -186,21 +188,21 @@ const sendPlayingEmbed = async (message, song, queue) => {
     let buttons = new MessageActionRow()
         .addComponents(
             new MessageButton()
-                .setCustomId('pause' + song.url)
+                .setCustomId('pause' + videoID)
                 .setEmoji('⏸️')
                 .setLabel('PAUSE')
                 .setStyle('SECONDARY')
         )
         .addComponents(
             new MessageButton()
-                .setCustomId('play' + song.url)
+                .setCustomId('play' + videoID)
                 .setEmoji('▶️')
                 .setLabel('PLAY')
                 .setStyle('SECONDARY')
         )
         .addComponents(
             new MessageButton()
-                .setCustomId('skip'+ song.url)
+                .setCustomId('skip' + videoID)
                 .setEmoji('⏭️')
                 .setLabel('SKIP')
                 .setStyle('SECONDARY')
@@ -211,16 +213,18 @@ const sendPlayingEmbed = async (message, song, queue) => {
     const collector = message.channel.createMessageComponentCollector({ time: 1000 * 60 * 20 })
 
     collector.on('collect', async (button) => {
-        button.deferUpdate();
-
-        if (button.customId === 'play') {
+        if (button.customId === 'play' + videoID) {
+            button.deferUpdate();
             queue.player.unpause();
 
-        } else if (button.customId === 'pause') {
+        } else if (button.customId === 'pause' + videoID) {
+            button.deferUpdate();
             queue.player.pause();
 
-        } else if (button.customId === 'skip') {
+        } else if (button.customId === 'skip' + videoID) {
 
+            // TODO: STOP CURRENT SONG, PLAY NEXT IN QUEUE
+            
         }
     });
 }
