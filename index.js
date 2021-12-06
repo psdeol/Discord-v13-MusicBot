@@ -40,25 +40,14 @@ client.on('messageCreate', async message => {
     let args = message.content.slice(prefix.length).trim().split(/ +/);
     let command = args.shift().toLowerCase();
 
-    console.log(client.commands);
-
     switch (command) {
 
         case 'join':
-            /*
-            const connection = joinVoiceChannel({
+            joinVoiceChannel({
                 channelId: message.member.voice.channel.id,
                 guildId: message.channel.guild.id,
                 adapterCreator: message.channel.guild.voiceAdapterCreator,
-            })
-
-            const audioPlayer = createAudioPlayer()
-            const resource = createAudioResource('./bruh.mp3')
-            audioPlayer.play(resource);
-
-            const subscription = connection.subscribe(audioPlayer);
-
-            */
+            });
             break;
 
         case 'play':
