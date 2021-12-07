@@ -50,6 +50,7 @@ client.on('messageCreate', async message => {
             });
             break;
 
+        case 'p':
         case 'play':
             client.commands.get('play').execute(client, message, args, queue);
             break;
@@ -60,6 +61,10 @@ client.on('messageCreate', async message => {
 
         case 'stop':
             client.commands.get('stop').execute(message, queue);
+            break;
+
+        case 'queue':
+            client.commands.get('queue').execute(message, args, queue);
             break;
     }
 });

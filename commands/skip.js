@@ -32,12 +32,12 @@ module.exports = {
     }
 }
 
-const skipSong = (message, queues) => {
+const skipSong = async (message, queues) => {
     let queue = queues.get(message.guild.id);
     let song = queue.songs.shift();
 
     if (song) {
-        let stream = ytdl(song.url, {
+        let stream = await ytdl(song.url, {
             filter: 'audioonly' ,
             highWaterMark: 1<<25
         });
@@ -53,7 +53,6 @@ const skipSong = (message, queues) => {
 
 const sendPlayingEmbed = async (message, song, queues) => {
     let queue = queues.get(message.guild.id);
-    let videoID = song.url.split("=")[1];
 
     let embed = new MessageEmbed()
         .setTitle(song.title)
@@ -70,21 +69,21 @@ const sendPlayingEmbed = async (message, song, queues) => {
     let buttons = new MessageActionRow()
         .addComponents(
             new MessageButton()
-                .setCustomId('pause' + videoID)
+                .setCustomId('pause' + song.id)
                 .setEmoji('⏸️')
                 .setLabel('PAUSE')
                 .setStyle('SECONDARY')
         )
         .addComponents(
             new MessageButton()
-                .setCustomId('play' + videoID)
+                .setCustomId('play' + song.id)
                 .setEmoji('▶️')
                 .setLabel('PLAY')
                 .setStyle('SECONDARY')
         )
         .addComponents(
             new MessageButton()
-                .setCustomId('skip' + videoID)
+                .setCustomId('skip' + song.id)
                 .setEmoji('⏭️')
                 .setLabel('SKIP')
                 .setStyle('SECONDARY')
@@ -95,15 +94,15 @@ const sendPlayingEmbed = async (message, song, queues) => {
     const collector = message.channel.createMessageComponentCollector({ time: 1000 * 60 * 20 })
 
     collector.on('collect', async (button) => {
-        if (button.customId === 'play' + videoID) {
+        if (button.customId === 'play' + song.id) {
             button.deferUpdate();
             queue.player.unpause();
 
-        } else if (button.customId === 'pause' + videoID) {
+        } else if (button.customId === 'pause' + song.id) {
             button.deferUpdate();
             queue.player.pause();
 
-        } else if (button.customId === 'skip' + videoID) {
+        } else if (button.customId === 'skip' + song.id) {
             button.deferUpdate();
             skipSong(message, queues);
         }
