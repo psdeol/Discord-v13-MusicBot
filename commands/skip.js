@@ -4,7 +4,7 @@ const ytdl = require('ytdl-core');
 
 module.exports = {
     name: 'skip',
-    aliases: ['s'],
+    aliases: ['s', 'sk', 'fs'],
     permissions: [],
     cooldown: 0,
     description: 'stops playing current song, plays next song in queue',
