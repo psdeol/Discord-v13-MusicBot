@@ -17,7 +17,7 @@ const client = new Client({
         Intents.FLAGS.GUILD_VOICE_STATES
     ] 
 });
-const token = process.env.CM_TOKEN;
+const token = process.env.TOKEN;
 const prefix = process.env.PREFIX;
 const queues = new Map();   // guild.id -> queue object
 client.commands = new Collection();
