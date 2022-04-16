@@ -32,6 +32,7 @@ for (const file of commandFiles) {
 
 client.once('ready', () => {
     console.log('Ready!');
+    client.user.setActivity(' music! Type \'!help\' for commands.', { type: 'PLAYING'});
 });
 
 client.on('messageCreate', async message => {
